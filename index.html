@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>MSN Technologies</title>
+  <script>
+    // Simple dark/light toggle
+    function toggleTheme() {
+      const current = document.documentElement.dataset.theme;
+      const next = current === "dark" ? "light" : "dark";
+      document.documentElement.dataset.theme = next;
+      localStorage.setItem("theme", next);
+    }
+    window.addEventListener("DOMContentLoaded", () => {
+      const stored = localStorage.getItem("theme");
+      const prefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
+      document.documentElement.dataset.theme = stored || (prefersDark ? "dark" : "light");
+    });
+  </script>
+  <style>
+    :root {
+      --bg-light: #f8fafc;
+      --text-light: #0f172a;
+      --bg-dark: #0f172a;
+      --text-dark: #f8fafc;
+    }
+    html[data-theme='light'] { background: var(--bg-light); color: var(--text-light); }
+    html[data-theme='dark'] { background: var(--bg-dark); color: var(--text-dark); }
+    body { font-family: system-ui, sans-serif; margin: 0; padding: 0; }
+    header, footer { padding: 1rem 2rem; border-bottom: 1px solid #ccc; display: flex; justify-content: space-between; align-items: center; }
+    footer { border-top: 1px solid #ccc; border-bottom: none; }
+    main { max-width: 960px; margin: 2rem auto; padding: 0 1rem; }
+    section { margin-top: 2rem; }
+    .card { border: 1px solid #ccc; border-radius: 0.5rem; padding: 1rem; margin: 0.5rem; }
+    .grid { display: grid; gap: 1rem; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); }
+    a { color: inherit; text-decoration: none; }
+    button { padding: 0.5rem 1rem; border-radius: 0.25rem; border: 1px solid #999; background: transparent; cursor: pointer; }
+  </style>
+</head>
+<body>
+  <header>
+    <div><img src="placeholder-logo.png" alt="Company Logo" style="height:32px;vertical-align:middle;"> <strong>MSN Technologies</strong></div>
+    <button onclick="toggleTheme()">Toggle Theme</button>
+  </header>
+  <main>
+    <h1>Application Development & AI / Machine Learning</h1>
+    <p>It is never too late to build a strong brand presence. As a building needs pillars, your business needs online marketing support. MSN Technologies provides custom, robust IT solutions with skilled experts focused on your online presence.</p>
+    <section id="services">
+      <h2>Services</h2>
+      <div class="grid">
+        <div class="card"><strong>Application Development</strong><br>Web and mobile apps using modern stacks.</div>
+        <div class="card"><strong>AI / ML</strong><br>Chatbots, prediction, and automation.</div>
+        <div class="card"><strong>Web Design & CMS</strong><br>Next.js/React or WordPress/Wix/Google Sites.</div>
+        <div class="card"><strong>Digital Marketing (SEO/SMO)</strong><br>Search, social, and analytics.</div>
+      </div>
+    </section>
+    <section id="about">
+      <h2>About</h2>
+      <p>MSN Technologies is a trusted IT partner in Collierville, TN. We ship production-ready software, high-performing websites, and practical AI solutions.</p>
+    </section>
+    <section id="contact">
+      <h2>Contact</h2>
+      <ul>
+        <li>Email: hr@msn-tech.com</li>
+        <li>Address: 10497 Hawk Inlet Dr, Collierville, TN 38017</li>
+      </ul>
+    </section>
+  </main>
+  <footer>
+    <span>© 2025 MSN Technologies</span>
+    <a href="#top">Back to top</a>
+  </footer>
+</body>
+</html>

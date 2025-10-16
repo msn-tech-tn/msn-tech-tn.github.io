@@ -1,0 +1,166 @@
+import React, { useEffect, useMemo, useState } from "react";
+
+function resolveInitialTheme(prefersDark, stored) {
+  if (stored === "light" || stored === "dark") return stored;
+  return prefersDark ? "dark" : "light";
+}
+function nextTheme(current) {
+  return current === "dark" ? "light" : "dark";
+}
+
+export default function ConsultantWebsite(props = {}) {
+  const { company = "MSN Technologies", logoSrc: rawLogo = "/placeholder-logo.png" } = props;
+  const logoSrc = typeof rawLogo === "string" && rawLogo.trim() ? rawLogo : "/placeholder-logo.png";
+  const prefersDark = (typeof window !== "undefined")
+    ? window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches
+    : false;
+
+  const [theme, setTheme] = useState(() => {
+    const stored = (typeof window !== "undefined") ? window.localStorage.getItem("theme") : null;
+    return resolveInitialTheme(prefersDark, stored);
+  });
+
+  useEffect(() => {
+    try { window.localStorage.setItem("theme", theme); } catch {}
+  }, [theme]);
+
+  const cx = (light, dark) => (theme === "dark" ? dark : light);
+
+  const services = useMemo(() => ([
+    { t: "Application Development", d: "Web and mobile apps using modern stacks." },
+    { t: "AI / ML", d: "Chatbots, prediction, and automation." },
+    { t: "Web Design & CMS", d: "Next.js/React or WordPress/Wix/Google Sites." },
+    { t: "Digital Marketing (SEO/SMO)", d: "Search, social, and analytics." },
+  ]), []);
+
+  return (
+    <div className={cx(
+      "min-h-screen bg-slate-50 text-slate-900",
+      "min-h-screen bg-slate-900 text-slate-100"
+    )}>
+      <header className={cx(
+        "w-full border-b border-slate-200 bg-white",
+        "w-full border-b border-slate-800 bg-slate-950"
+      )}>
+        <div className="mx-auto flex max-w-6xl items-center justify-between px-4 py-3">
+          <div className="flex items-center gap-3">
+            <img src={logoSrc} alt="Company Logo" className="h-8 w-auto" loading="eager" decoding="async" />
+            <span className="text-base font-semibold">{company}</span>
+          </div>
+          <div className="flex items-center gap-4">
+            <nav className="hidden gap-6 sm:flex">
+              <a className="text-sm hover:underline" href="#services">Services</a>
+              <a className="text-sm hover:underline" href="#about">About</a>
+              <a className="text-sm hover:underline" href="#contact">Contact</a>
+            </nav>
+            <button
+              type="button"
+              aria-label="Toggle color theme"
+              onClick={() => setTheme((t) => nextTheme(t))}
+              className={cx(
+                "rounded-md border border-slate-300 bg-white px-3 py-1 text-sm text-slate-900 hover:bg-slate-100",
+                "rounded-md border border-slate-700 bg-slate-800 px-3 py-1 text-sm text-slate-100 hover:bg-slate-700"
+              )}
+            >
+              {theme === "dark" ? "Light mode" : "Dark mode"}
+            </button>
+          </div>
+        </div>
+      </header>
+
+      <main className="mx-auto max-w-6xl px-4 py-12">
+        <h1 className="text-3xl font-semibold">Application Development & AI / Machine Learning</h1>
+        <p className={cx("mt-3 max-w-2xl text-slate-700", "mt-3 max-w-2xl text-slate-300")}>
+          It is never too late to build a strong brand presence. As a building needs pillars,
+          your business needs online marketing support. MSN Technologies provides custom, robust
+          IT solutions with skilled experts focused on your online presence.
+        </p>
+
+        <section id="services" className="mt-10 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+          {services.map((s) => (
+            <div key={s.t} className={cx(
+              "rounded-xl border border-slate-200 bg-white p-4",
+              "rounded-xl border border-slate-800 bg-slate-900 p-4"
+            )}>
+              <div className="text-sm font-semibold">{s.t}</div>
+              <div className={cx("mt-1 text-sm text-slate-600", "mt-1 text-sm text-slate-300")}>{s.d}</div>
+            </div>
+          ))}
+        </section>
+
+        <section id="about" className="mt-12">
+          <h2 className="text-xl font-semibold">About</h2>
+          <p className={cx("mt-2 max-w-2xl text-slate-700", "mt-2 max-w-2xl text-slate-300")}>
+            MSN Technologies is a trusted IT partner in Collierville, TN. We ship production-ready
+            software, high-performing websites, and practical AI solutions.
+          </p>
+        </section>
+
+        <section id="contact" className="mt-12">
+          <h2 className="text-xl font-semibold">Contact</h2>
+          <ul className={cx("mt-2 space-y-1 text-slate-700", "mt-2 space-y-1 text-slate-300")}>
+            <li>Email: hr@msn-tech.com</li>
+            <li>Address: 10497 Hawk Inlet Dr, Collierville, TN 38017</li>
+          </ul>
+        </section>
+      </main>
+
+      <footer className={cx(
+        "mt-12 border-t border-slate-200 bg-white",
+        "mt-12 border-t border-slate-800 bg-slate-950"
+      )}>
+        <div className="mx-auto flex max-w-6xl items-center justify-between px-4 py-4">
+          <div className="flex items-center gap-3">
+            <img src={logoSrc} alt="Company Logo" className="h-6 w-auto" loading="lazy" decoding="async" />
+            <span className="text-sm">© {new Date().getFullYear()} {company}</span>
+          </div>
+          <a className="text-sm hover:underline" href="#home">Back to top</a>
+        </div>
+      </footer>
+    </div>
+  );
+}
+
+export function runTests() {
+  const results = [];
+  try {
+    const el = ConsultantWebsite({});
+    results.push({ name: "renders with defaults", pass: !!el });
+  } catch (e) {
+    results.push({ name: "renders with defaults", pass: false, note: String(e) });
+  }
+  try {
+    const el = ConsultantWebsite({ logoSrc: "" });
+    results.push({ name: "fallback logo for empty string", pass: !!el });
+  } catch (e) {
+    results.push({ name: "fallback logo for empty string", pass: false, note: String(e) });
+  }
+  try {
+    const el = ConsultantWebsite({ company: "Acme" });
+    results.push({ name: "renders custom company", pass: !!el });
+  } catch (e) {
+    results.push({ name: "renders custom company", pass: false, note: String(e) });
+  }
+  try {
+    const a = resolveInitialTheme(false, "dark") === "dark";
+    const b = resolveInitialTheme(true, "light") === "light";
+    results.push({ name: "resolveInitialTheme uses stored", pass: a && b });
+  } catch (e) {
+    results.push({ name: "resolveInitialTheme uses stored", pass: false, note: String(e) });
+  }
+  try {
+    const a = resolveInitialTheme(true, null) === "dark";
+    const b = resolveInitialTheme(false, null) === "light";
+    results.push({ name: "resolveInitialTheme falls back to system", pass: a && b });
+  } catch (e) {
+    results.push({ name: "resolveInitialTheme falls back to system", pass: false, note: String(e) });
+  }
+  try {
+    const a = nextTheme("dark") === "light";
+    const b = nextTheme("light") === "dark";
+    results.push({ name: "nextTheme toggles", pass: a && b });
+  } catch (e) {
+    results.push({ name: "nextTheme toggles", pass: false, note: String(e) });
+  }
+  return results;
+}
